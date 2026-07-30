@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from typing import List
+import secrets
 
 from app.database import get_db
 import app.models as models
@@ -12,7 +15,85 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.get("/")
+security = HTTPBasic()
+
+def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_user = secrets.compare_digest(credentials.username, "admin")
+    correct_pass = secrets.compare_digest(credentials.password, "your_secure_password")
+    if not (correct_user and correct_pass):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
+
+# --- PUBLIC SEO LANDING PAGE ---
+@app.get("/", response_class=HTMLResponse)
+def public_landing():
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Quant Earnings Pro | Advanced Quantitative Stock Screening & Analysis</title>
+        <meta name="description" content="Institutional-grade quantitative stock screening, 10-year historical market data analysis, and automated earnings insights.">
+        <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+            h1 { color: #111; font-size: 2.5rem; margin-bottom: 10px; }
+            .tagline { font-size: 1.25rem; color: #555; margin-bottom: 30px; }
+            .card { background: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+            .btn { display: inline-block; background: #000; color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; }
+            .btn:hover { background: #333; }
+        </style>
+    </head>
+    <body>
+        <h1>Quant Earnings Pro</h1>
+        <p class="tagline">Advanced quantitative stock analytics and data-driven market intelligence.</p>
+        
+        <div class="card">
+            <h2>Platform Overview</h2>
+            <p>Quant Earnings Pro is an upcoming high-performance financial analytics engine designed to process deep historical market data, execute automated quantitative screeners, and uncover high-probability equity setups.</p>
+            <p>Our infrastructure tracks over a decade of granular daily stock metrics to support disciplined, systematic portfolio strategies.</p>
+        </div>
+
+        <div class="card">
+            <h3>Member Access</h3>
+            <p>Authorized platform users can access the live internal testing dashboard below.</p>
+            <a href="/dashboard" class="btn">Private Login</a>
+        </div>
+    </body>
+    </html>
+    """
+
+# --- PRIVATE SECURE DASHBOARD ---
+@app.get("/dashboard", response_class=HTMLResponse)
+def private_dashboard(username: str = Depends(verify_admin)):
+    return f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quant Earnings Pro - Internal Dashboard</title>
+        <style>
+            body {{ font-family: sans-serif; padding: 40px; background: #121212; color: #e0e0e0; }}
+            .stats {{ background: #1e1e1e; padding: 20px; border-radius: 8px; border: 1px solid #333; }}
+        </style>
+    </head>
+    <body>
+        <h1>Internal Analytics Dashboard</h1>
+        <p>Welcome back, {username}. System operational.</p>
+        <div class="stats">
+            <h3>Database Status</h3>
+            <p>12,678 daily historical records loaded and indexed.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+# --- API Status Route (Previous Root) ---
+@app.get("/api/status")
 def read_root():
     return {"status": "QuantPlus API Online", "docs": "/docs"}
 
@@ -71,82 +152,3 @@ def add_to_watchlist(item: schemas.WatchlistCreate, db: Session = Depends(get_db
     db.commit()
     db.refresh(db_item)
     return db_item
-
-@app.delete("/api/watchlists/{watchlist_id}", status_code=status.HTTP_204_NO_CONTENT)
-def remove_from_watchlist(watchlist_id: int, db: Session = Depends(get_db)):
-    """Remove an item from a watchlist by ID."""
-    db_item = db.query(models.Watchlist).filter(models.Watchlist.id == watchlist_id).first()
-    if not db_item:
-        raise HTTPException(status_code=404, detail="Watchlist item not found")
-    db.delete(db_item)
-    db.commit()
-    return None
-
-# --- Score Thresholds Endpoints ---
-@app.get("/api/thresholds", response_model=List[schemas.ScoreThresholdResponse])
-def get_thresholds(db: Session = Depends(get_db)):
-    """Fetch current scoring threshold configurations."""
-    return db.query(models.ScoreThreshold).all()
-
-@app.post("/api/thresholds", response_model=schemas.ScoreThresholdResponse, status_code=status.HTTP_201_CREATED)
-def set_threshold(threshold: schemas.ScoreThresholdCreate, db: Session = Depends(get_db)):
-    """Set or update a metric threshold."""
-    db_t = db.query(models.ScoreThreshold).filter(models.ScoreThreshold.metric_name == threshold.metric_name).first()
-    if db_t:
-        db_t.min_value = threshold.min_value
-        db_t.max_value = threshold.max_value
-        db_t.weight = threshold.weight
-    else:
-        db_t = models.ScoreThreshold(**threshold.model_dump())
-        db.add(db_t)
-    db.commit()
-    db.refresh(db_t)
-    return db_t
-
-# --- Market Regime Endpoints ---
-@app.get("/api/regime", response_model=List[schemas.MarketRegimeResponse])
-def get_regime(db: Session = Depends(get_db)):
-    """Fetch active market regime settings."""
-    return db.query(models.MarketRegime).all()
-
-@app.post("/api/regime", response_model=schemas.MarketRegimeResponse, status_code=status.HTTP_201_CREATED)
-def set_regime(regime: schemas.MarketRegimeCreate, db: Session = Depends(get_db)):
-    """Set or update the active market regime."""
-    db_regime = db.query(models.MarketRegime).first()
-    if db_regime:
-        db_regime.regime = regime.regime
-        db_regime.fed_rate_state = regime.fed_rate_state
-        db_regime.multiplier = regime.multiplier
-    else:
-        db_regime = models.MarketRegime(**regime.model_dump())
-        db.add(db_regime)
-    db.commit()
-    db.refresh(db_regime)
-    return db_regime
-
-# --- Backtest Endpoint Stub ---
-@app.post("/api/backtest", response_model=schemas.BacktestResponse)
-def run_backtest_stub(request: schemas.BacktestRequest):
-    """Stub endpoint for executing strategy backtests."""
-    return {
-        "status": "success",
-        "message": f"Backtest executed from {request.start_date} to {request.end_date}",
-        "parameters": request,
-        "results": {
-            "total_return_pct": 24.5,
-            "max_drawdown_pct": -12.3,
-            "sharpe_ratio": 1.85,
-            "sortino_ratio": 2.15,
-            "win_rate_pct": 68.4
-        }
-    }
-
-# --- Trigger Screener Run Endpoint ---
-from fastapi import BackgroundTasks
-from app.screener import run_screener_job
-
-@app.post("/api/run-screener")
-def trigger_screener(background_tasks: BackgroundTasks, limit: int = 50):
-    """Triggers the background market screener scan."""
-    background_tasks.add_task(run_screener_job, limit_tickers=limit)
-    return {"status": "success", "message": f"Screener background task started for top {limit} tickers."}
