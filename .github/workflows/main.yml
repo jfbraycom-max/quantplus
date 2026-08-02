@@ -3,14 +3,14 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches:
-      - main  # Triggers the workflow when you push to the main branch
+      - main
 
 env:
-  PROJECT_ID: your-gcp-project-id            # Replace with your Google Cloud project ID
-  REGION: us-central1                        # Replace with your Cloud Run region
-  SERVICE: quantplus                         # The name of your Cloud Run service
-  GAR_LOCATION: us-central1                  # Artifact Registry location
-  GAR_REPO: your-artifact-repo-name          # Artifact Registry repository name
+  PROJECT_ID: quantearningspro
+  REGION: us-central1
+  SERVICE: quantplus
+  GAR_LOCATION: us-central1
+  GAR_REPO: quantplus-repo
 
 jobs:
   deploy:
@@ -22,15 +22,13 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Authenticate to Google Cloud
-      # Note: Workload Identity Federation is recommended, but for simplicity 
-      # here, we use a Service Account Key stored in GitHub Secrets.
       - name: Google Auth
         id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      # 3. Set up Docker to authenticate with Google Artifact Registry
+      # 3. Authenticate Docker with Google Artifact Registry
       - name: Docker Auth
         run: |-
           gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
@@ -42,7 +40,7 @@ jobs:
           docker build -t "${IMAGE}" .
           docker push "${IMAGE}"
 
-      # 5. Deploy the image to Cloud Run
+      # 5. Deploy the container to Cloud Run
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
