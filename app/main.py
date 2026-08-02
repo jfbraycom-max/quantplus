@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Depends, HTTPException,  status
 from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
@@ -14,6 +15,7 @@ app = FastAPI(
     description="Backend API for QuantPlus stock screening, scoring, market regimes, and watchlists.",
     version="1.0.0"
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 security = HTTPBasic()
 
