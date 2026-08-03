@@ -15,8 +15,13 @@ app = FastAPI(
     description="Backend API for QuantPlus stock screening, scoring, market regimes, and watchlists.",
     version="1.0.0"
 )
-app.mount("/static", StaticFiles(directory="static"), name="static")
+import os
 
+# Get the directory where main.py is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 security = HTTPBasic()
 
 def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
