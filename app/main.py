@@ -66,7 +66,7 @@ def public_landing():
         <img src="/static/images/QPAlogo.svg" alt="QuantPlus Analytics" style="max-width: 100%; margin-bottom: 10px;">
         <img src="/static/images/QPLlogo.svg" alt="QuantPlus Learning" style="max-width: 100%; margin-bottom: 20px;">
         
-        <h1>Quant Earnings Pro</h1>
+        <img src="/static/images/QEPlogo.svg" alt="Quant Earnings Pro" style="max-width: 100%; margin-bottom: 10px;">
         <p class="tagline">Advanced quantitative stock analytics and data-driven market intelligence.</p>
         
         <div class="card">
@@ -84,12 +84,6 @@ def public_landing():
     </html>
     """
     
-# --- PUBLIC SEO LANDING PAGE ---
-
-@app.get("/", response_class=HTMLResponse)
-def public_landing(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
 # --- PRIVATE SECURE DASHBOARD ---
 @app.get("/dashboard", response_class=HTMLResponse)
 def private_dashboard(username: str = Depends(verify_admin)):
