@@ -18,6 +18,7 @@ app = FastAPI(
     description="Backend API for QuantPlus stock screening, scoring, market regimes, and watchlists.",
     version="1.0.0"
 )
+import os
 
 # --- Mount Static Files & Templates ---
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -35,7 +36,54 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
             headers={"WWW-Authenticate": "Basic"},
         )
     return credentials.username
-
+    
+# --- PUBLIC SEO LANDING PAGE ---
+@app.get("/", response_class=HTMLResponse)
+def public_landing():
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Quant Earnings Pro | Advanced Quantitative Stock Screening & Analysis</title>
+        
+        <!-- Tab Icon (Q+ Logo) -->
+        <link rel="icon" type="image/svg+xml" href="/static/images/QpLogo.svg">
+        
+        <meta name="description" content="Institutional-grade quantitative stock screening, 10-year historical market data analysis, and automated earnings insights.">
+        <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+            h1 { color: #111; font-size: 2.5rem; margin-bottom: 10px; }
+            .tagline { font-size: 1.25rem; color: #555; margin-bottom: 30px; }
+            .card { background: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+            .btn { display: inline-block; background: #000; color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; }
+            .btn:hover { background: #333; }
+        </style>
+    </head>
+    <body>
+        <!-- Company & Learning Banners -->
+        <img src="/static/images/QPAlogo.svg" alt="QuantPlus Analytics" style="max-width: 100%; margin-bottom: 10px;">
+        <img src="/static/images/QPLlogo.svg" alt="QuantPlus Learning" style="max-width: 100%; margin-bottom: 20px;">
+        
+        <h1>Quant Earnings Pro</h1>
+        <p class="tagline">Advanced quantitative stock analytics and data-driven market intelligence.</p>
+        
+        <div class="card">
+            <h2>Platform Overview</h2>
+            <p>Quant Earnings Pro is an upcoming high-performance financial analytics engine designed to process deep historical market data, execute automated quantitative screeners, and uncover high-probability equity setups.</p>
+            <p>Our infrastructure tracks over a decade of granular daily stock metrics to support disciplined, systematic portfolio strategies.</p>
+        </div>
+        
+        <div class="card">
+            <h3>Member Access</h3>
+            <p>Authorized platform users can access the live internal testing dashboard below.</p>
+            <a href="/dashboard" class="btn">Private Login</a>
+        </div>
+    </body>
+    </html>
+    """
+    
 # --- PUBLIC SEO LANDING PAGE ---
 
 @app.get("/", response_class=HTMLResponse)
