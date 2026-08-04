@@ -75,11 +75,52 @@ def public_landing():
             <p>Our infrastructure tracks over a decade of granular daily stock metrics to support disciplined, systematic portfolio strategies.</p>
         </div>
         
+
+        <div class="card" id="top-picks">
+            <h2 style="margin-bottom:4px;">Top Screened Picks</h2>
+            <p style="color:#888;font-size:0.85rem;margin-top:0;margin-bottom:16px;">5 consecutive quarters of EPS growth &mdash; ranked by 5-quarter growth rate</p>
+            <div id="stocks-preview"><p style="color:#999;">Loading...</p></div>
+        </div>
+
         <div class="card">
             <h3>Member Access</h3>
             <p>Authorized platform users can access the live internal testing dashboard below.</p>
             <a href="/dashboard" class="btn">Private Login</a>
         </div>
+    <script>
+    fetch('/api/top5')
+      .then(r => r.json())
+      .then(stocks => {
+        const el = document.getElementById('stocks-preview');
+        if (!stocks || !stocks.length) {
+          el.innerHTML = '<p style="color:#999">No qualifying stocks found.</p>';
+          return;
+        }
+        el.innerHTML = stocks.map((s, i) => `
+          <div style="border-top:1px solid #e5e5e5;padding:14px 0">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+              <div>
+                <strong style="font-size:1.05rem">#${i+1} ${s.ticker}</strong>
+                <span style="color:#555;margin-left:8px">${s.name}</span>
+                <span style="color:#999;margin-left:8px;font-size:0.8rem">${s.sector}</span>
+              </div>
+              <span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:3px 12px;border-radius:20px;font-weight:700;white-space:nowrap">
+                +${s.growth_5q_pct}% 5Q Growth
+              </span>
+            </div>
+            <p style="color:#555;font-size:0.88rem;margin:8px 0 4px">${s.synopsis}</p>
+            <div style="font-size:0.8rem;color:#888">
+              EPS: $${s.q4_eps} &rarr; $${s.latest_eps} &nbsp;|&nbsp;
+              RSI: ${s.rsi ?? 'N/A'} &nbsp;|&nbsp;
+              Mkt Cap: $${s.market_cap_b ? s.market_cap_b + 'B' : 'N/A'}
+            </div>
+          </div>`).join('');
+      })
+      .catch(() => {
+        const el = document.getElementById('stocks-preview');
+        if (el) el.innerHTML = '<p style="color:#999">Preview unavailable.</p>';
+      });
+    </script>
     </body>
     </html>
     """
