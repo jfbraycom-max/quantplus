@@ -76,6 +76,235 @@ def public_landing():
         </div>
         
 
+
+        <!-- ── Featured Analyses ──────────────────────────────────────── -->
+        <div style="margin-bottom:8px;">
+            <h2 style="font-size:1.2rem;color:#111;margin-bottom:4px;">Featured Stock Analyses</h2>
+            <p style="color:#888;font-size:0.85rem;margin-top:0;">
+                In-depth looks at companies showing sustained improvement across revenue,
+                earnings, and earnings per share over the past five quarters.
+                Analysis is editorial and does not constitute investment advice.
+            </p>
+        </div>
+
+        <!-- ── NVDA ───────────────────────────────────────────────────── -->
+        <div class="card" style="border-left:4px solid #7c3aed;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div>
+                    <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#7c3aed;">AI Infrastructure</span>
+                    <h2 style="margin:4px 0 2px;">NVIDIA <span style="color:#555;font-weight:400;">(NVDA)</span></h2>
+                    <span style="font-size:0.85rem;color:#888;">Semiconductors &nbsp;&bull;&nbsp; 5 Consecutive Improving Quarters &mdash; All Three Metrics</span>
+                </div>
+                <span style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;">
+                    Highest EPS Growth in Universe
+                </span>
+            </div>
+            <p style="color:#333;margin-bottom:10px;">
+                NVIDIA has become the defining infrastructure company of the AI era.
+                Its H100 and Blackwell GPU architectures are the compute substrate powering virtually
+                every major AI model in production today &mdash; from OpenAI to Google DeepMind to
+                thousands of enterprise deployments. Demand has outpaced supply for multiple consecutive quarters.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                What makes NVIDIA's position durable is not just the hardware. The CUDA software ecosystem &mdash;
+                built over 15 years and deeply integrated into the workflows of AI researchers and engineers &mdash;
+                creates meaningful switching costs. Competing chip manufacturers face a cold-start problem:
+                raw performance matters less than the software tools researchers already know.
+            </p>
+            <p style="color:#333;margin-bottom:16px;">
+                Revenue, operating income, and EPS have all improved in each of the past five quarters,
+                with EPS growth among the highest in our curated universe. The primary risks to monitor:
+                U.S. export restrictions on advanced chips to China, and eventual normalization of data
+                center capital expenditure cycles.
+            </p>
+            <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:6px;padding:12px 16px;font-size:0.82rem;color:#6d28d9;">
+                <strong>5-Quarter Growth:</strong>&nbsp;
+                Revenue +85% &nbsp;&bull;&nbsp; Operating Income +147% &nbsp;&bull;&nbsp; EPS +215%
+            </div>
+            <p style="font-size:0.75rem;color:#aaa;margin-top:14px;margin-bottom:0;">
+                For informational purposes only. QuantPlus Analytics does not hold positions in securities discussed.
+            </p>
+        </div>
+
+        <!-- ── TSM ────────────────────────────────────────────────────── -->
+        <div class="card" style="border-left:4px solid #0891b2;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div>
+                    <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#0891b2;">Critical Infrastructure</span>
+                    <h2 style="margin:4px 0 2px;">Taiwan Semiconductor <span style="color:#555;font-weight:400;">(TSM)</span></h2>
+                    <span style="font-size:0.85rem;color:#888;">Semiconductors &nbsp;&bull;&nbsp; 5 Consecutive Improving Quarters &mdash; All Three Metrics</span>
+                </div>
+                <span style="background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;">
+                    The World&#39;s Foundry
+                </span>
+            </div>
+            <p style="color:#333;margin-bottom:10px;">
+                If NVIDIA designs the engines of the AI era, TSMC builds them. Apple, NVIDIA, AMD,
+                Qualcomm, and Broadcom all rely on Taiwan Semiconductor to manufacture their most
+                advanced chips. No other foundry in the world can match TSMC's process technology
+                at leading-edge nodes &mdash; 3nm and 2nm production &mdash; making it a
+                single point of dependency for much of the modern technology industry.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                That dependency cuts both ways. TSMC's competitive moat is extraordinary, but so is the
+                geopolitical risk of a company whose primary manufacturing base sits 110 miles from mainland
+                China. This is the single most important risk factor for any investor to understand.
+                In direct response, TSMC is investing heavily in fab diversification &mdash; including
+                a multi-billion dollar facility in Arizona now entering production.
+            </p>
+            <p style="color:#333;margin-bottom:16px;">
+                Financially, TSMC has delivered five consecutive quarters of improvement across all three
+                key metrics as AI-driven semiconductor demand floods its order books.
+                The fundamentals are hard to argue with; the geopolitical calculus is yours to weigh.
+            </p>
+            <div style="background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;padding:12px 16px;font-size:0.82rem;color:#0e7490;">
+                <strong>5-Quarter Growth:</strong>&nbsp;
+                Revenue +36% &nbsp;&bull;&nbsp; Operating Income +65% &nbsp;&bull;&nbsp; EPS +77%
+            </div>
+            <p style="font-size:0.75rem;color:#aaa;margin-top:14px;margin-bottom:0;">
+                For informational purposes only. QuantPlus Analytics does not hold positions in securities discussed.
+            </p>
+        </div>
+
+        <!-- ── CTAS ───────────────────────────────────────────────────── -->
+        <div class="card" style="border-left:4px solid #059669;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div>
+                    <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#059669;">Consistent Compounder</span>
+                    <h2 style="margin:4px 0 2px;">Cintas Corporation <span style="color:#555;font-weight:400;">(CTAS)</span></h2>
+                    <span style="font-size:0.85rem;color:#888;">Business Services &nbsp;&bull;&nbsp; 5 Consecutive Improving Quarters &mdash; All Three Metrics</span>
+                </div>
+                <span style="background:#f0fdf4;color:#059669;border:1px solid #bbf7d0;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;">
+                    Quiet Consistency
+                </span>
+            </div>
+            <p style="color:#333;margin-bottom:10px;">
+                Cintas doesn't make semiconductors or train AI models. It delivers uniforms, workwear,
+                floor mats, first-aid kits, and restroom supplies to businesses across North America.
+                It is one of the least glamorous companies you will ever research &mdash; and one of
+                the most consistent compounders in the market.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                The business model is built on route density and switching costs.
+                Once a company standardizes its workwear program with Cintas &mdash; uniforms fitted,
+                embroidered, tracked, laundered on a weekly cycle &mdash; switching to a competitor
+                is a genuine operational headache. That friction compounds over decades into a durable,
+                recession-resilient revenue base that grows quietly every quarter.
+            </p>
+            <p style="color:#333;margin-bottom:16px;">
+                CTAS achieved the same five-quarter consistency score as some of the highest-growth
+                names in our universe &mdash; not by posting explosive numbers, but by never having
+                a bad quarter. That kind of reliability, at scale, is exactly what systematic screening
+                is designed to surface.
+            </p>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:12px 16px;font-size:0.82rem;color:#065f46;">
+                <strong>5-Quarter Growth:</strong>&nbsp;
+                Revenue +9% &nbsp;&bull;&nbsp; Operating Income +15% &nbsp;&bull;&nbsp; EPS +16%
+                &nbsp;&bull;&nbsp; <em>Steady, not spectacular &mdash; that&#39;s the point.</em>
+            </div>
+            <p style="font-size:0.75rem;color:#aaa;margin-top:14px;margin-bottom:0;">
+                For informational purposes only. QuantPlus Analytics does not hold positions in securities discussed.
+            </p>
+        </div>
+
+        <!-- ── MCHP ───────────────────────────────────────────────────── -->
+        <div class="card" style="border-left:4px solid #2563eb;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div>
+                    <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#2563eb;">Recovery Watch</span>
+                    <h2 style="margin:4px 0 2px;">Microchip Technology <span style="color:#555;font-weight:400;">(MCHP)</span></h2>
+                    <span style="font-size:0.85rem;color:#888;">Semiconductors &nbsp;&bull;&nbsp; 5 Consecutive Improving Quarters &mdash; Revenue &amp; Operating Income</span>
+                </div>
+                <span style="background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;">
+                    Cyclical Turnaround
+                </span>
+            </div>
+            <p style="color:#333;margin-bottom:10px;">
+                Microchip Technology is a 30-year-old semiconductor leader &mdash; microcontrollers
+                and analog chips for industrial, automotive, and consumer electronics.
+                Not a new name, but one worth watching closely right now.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                The semiconductor sector endured one of its most severe inventory corrections in recent
+                memory through 2024&ndash;2025. Customers who over-ordered during the COVID supply crunch
+                spent months drawing down existing inventory rather than placing new orders.
+                MCHP took a direct hit, posting operating losses and negative EPS through much of the cycle.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                <strong>What the data shows:</strong> five consecutive quarters of improving revenue
+                (from $970M to $1.31B) and operating income (from &minus;$28.7M to $223.8M) &mdash;
+                every major financial metric moving in the right direction, quarter after quarter.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                Semiconductor inventory cycles tend to be multi-year events. Companies found near the trough
+                with sustained quarterly improvement often carry significant runway as inventory normalizes
+                and new orders accelerate.
+            </p>
+            <p style="color:#333;margin-bottom:16px;font-style:italic;color:#555;">
+                <strong>A note on our model:</strong> When a company is recovering from losses,
+                standard percentage growth calculations produce extremely large or undefined numbers &mdash;
+                going from &minus;$28.7M to $223.8M can't be meaningfully expressed as a percentage.
+                Our screener flags these cases and excludes the distorted growth rate from composite scoring,
+                relying instead on the consistency trend. We are refining the model to better capture
+                and contextualize turnaround trajectories.
+            </p>
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:12px 16px;font-size:0.82rem;color:#1d4ed8;">
+                <strong>5-Quarter Trend:</strong>&nbsp;
+                Revenue $970M &rarr; $1.31B (+35%) &nbsp;&bull;&nbsp;
+                Operating Income &minus;$28.7M &rarr; $223.8M &nbsp;&bull;&nbsp;
+                EPS &minus;$0.29 &rarr; $0.21
+            </div>
+            <p style="font-size:0.75rem;color:#aaa;margin-top:14px;margin-bottom:0;">
+                For informational purposes only. QuantPlus Analytics does not hold positions in securities discussed.
+            </p>
+        </div>
+
+        <!-- ── WDAY ───────────────────────────────────────────────────── -->
+        <div class="card" style="border-left:4px solid #d97706;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div>
+                    <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#d97706;">Enterprise SaaS</span>
+                    <h2 style="margin:4px 0 2px;">Workday <span style="color:#555;font-weight:400;">(WDAY)</span></h2>
+                    <span style="font-size:0.85rem;color:#888;">Cloud Software &nbsp;&bull;&nbsp; Strong Operating Income &amp; Revenue Improvement</span>
+                </div>
+                <span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:4px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;">
+                    Profitability Inflection
+                </span>
+            </div>
+            <p style="color:#333;margin-bottom:10px;">
+                Workday runs the back office of some of the world's largest organizations &mdash;
+                HR, payroll, financial management, and workforce planning for enterprises that employ
+                hundreds of thousands of people. It is not a flashy consumer product; it is the
+                system a global company uses to pay its employees and close its books every quarter.
+            </p>
+            <p style="color:#333;margin-bottom:10px;">
+                That kind of software is extraordinarily sticky. When a company of 50,000 employees
+                runs payroll on Workday, migrating to a competitor is a multi-year, nine-figure
+                undertaking. Customer retention in enterprise HCM is among the highest in software,
+                and Workday's annual contract values compound as customers expand usage across
+                more modules and geographies.
+            </p>
+            <p style="color:#333;margin-bottom:16px;">
+                What the data captures is a profitability inflection. Workday spent years investing
+                heavily in R&amp;D and sales capacity &mdash; at the expense of near-term earnings.
+                Operating income and revenue have now improved in each of the past five quarters as that
+                investment converts to margin expansion. EPS growth has been dramatic from a low base,
+                reflecting the shift from a growth-at-all-costs posture to disciplined profitability.
+                AI-powered features &mdash; agent-based workflows for HR and finance &mdash; are being
+                embedded into the platform, extending the moat.
+            </p>
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:12px 16px;font-size:0.82rem;color:#92400e;">
+                <strong>5-Quarter Growth:</strong>&nbsp;
+                Revenue +14% &nbsp;&bull;&nbsp; Operating Income +65% &nbsp;&bull;&nbsp; EPS +248%
+                &nbsp;&bull;&nbsp; <em>Profitability ramping as scale kicks in.</em>
+            </div>
+            <p style="font-size:0.75rem;color:#aaa;margin-top:14px;margin-bottom:0;">
+                For informational purposes only. QuantPlus Analytics does not hold positions in securities discussed.
+            </p>
+        </div>
+
+        <!-- ── End Featured Analyses ──────────────────────────────────── -->
+
         <div class="card">
             <h3>Member Access</h3>
             <p>Authorized platform users can access the live internal testing dashboard below.</p>
