@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }}</title>
+  <meta name="description" content="{{ meta_desc }}">
+  <link rel="canonical" href="https://quantearningspro.com/learn/glossary">
+  <link rel="icon" type="image/svg+xml" href="/static/images/QpLogo.svg">
+  <link rel="stylesheet" href="/static/css/glossary.css">
+  <style>
+    /* Base resets */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa; color: #1a1a2e; line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Layout */
+    .qpl-page { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+
+    /* Header */
+    .qpl-header {
+      background: #0f0f23; color: #fff;
+      padding: 20px 0; margin: 0 -20px 32px;
+    }
+    .qpl-header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .qpl-brand { display: flex; align-items: center; gap: 14px; }
+    .qpl-logo { height: 40px; }
+    .qpl-title { font-size: 1.4rem; font-weight: 700; }
+    .qpl-subtitle { font-size: 0.85rem; color: #a0aec0; margin-top: 2px; }
+    .qpl-cta-btn {
+      background: #6c63ff; color: #fff; padding: 9px 20px; border-radius: 6px;
+      font-weight: 600; font-size: 0.88rem; white-space: nowrap;
+    }
+    .qpl-cta-btn:hover { background: #5a52d5; }
+
+    /* Search */
+    .qpl-search-section { margin-bottom: 24px; }
+    .qpl-search-wrap { position: relative; }
+    .qpl-search-box {
+      display: flex; align-items: center;
+      background: #fff; border: 2px solid #e2e8f0; border-radius: 10px;
+      padding: 10px 14px; transition: border-color 0.2s;
+    }
+    .qpl-search-box:focus-within { border-color: #6c63ff; }
+    .qpl-search-icon { color: #a0aec0; margin-right: 10px; flex-shrink: 0; }
+    .qpl-search-input {
+      border: none; outline: none; flex: 1; font-size: 1rem;
+      background: transparent; color: #1a1a2e;
+    }
+    .qpl-search-clear {
+      background: none; border: none; cursor: pointer;
+      color: #a0aec0; font-size: 1rem; padding: 2px 6px;
+    }
+    .qpl-search-results {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1); z-index: 100;
+      max-height: 360px; overflow-y: auto;
+    }
+    .qpl-search-hint { font-size: 0.82rem; color: #718096; margin-top: 8px; }
+
+    /* Nav pills */
+    .qpl-nav-section { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .qpl-nav-btn {
+      padding: 8px 16px; border-radius: 8px; font-size: 0.88rem;
+      background: #fff; border: 1px solid #e2e8f0; color: #4a5568; cursor: pointer;
+    }
+    .qpl-nav-btn.active { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+    .qpl-nav-btn--product { background: #0f0f23; color: #fff; border-color: #0f0f23; }
+    .qpl-nav-btn--product:hover { background: #1a1a3e; }
+
+    /* Browse header */
+    .qpl-browse-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; font-size: 0.88rem; color: #718096;
+    }
+
+    /* Category pills */
+    .qpl-category-pills {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .qpl-pill {
+      padding: 5px 14px; border-radius: 20px; border: 1px solid #e2e8f0;
+      background: #fff; color: #4a5568; font-size: 0.82rem; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qpl-pill.active, .qpl-pill:hover { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+
+    /* Term cards */
+    .qpl-category-group { margin-bottom: 36px; }
+    .qpl-category-heading {
+      font-size: 1.05rem; font-weight: 700; color: #2d3748;
+      border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px;
+    }
+    .qpl-term-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+    .qpl-term-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 18px; transition: box-shadow 0.2s;
+    }
+    .qpl-term-card:hover { box-shadow: 0 4px 16px rgba(108,99,255,0.1); }
+    .qpl-term-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+    .qpl-term-name { font-size: 1rem; font-weight: 700; }
+    .qpl-term-name a:hover { color: #6c63ff; }
+    .qpl-term-cat-badge {
+      font-size: 0.72rem; background: #eef2ff; color: #6c63ff;
+      border-radius: 12px; padding: 2px 10px; white-space: nowrap; flex-shrink: 0;
+    }
+    .qpl-term-definition { font-size: 0.85rem; color: #4a5568; margin-bottom: 8px; }
+    .qpl-term-explanation { font-size: 0.82rem; color: #718096; margin-bottom: 12px; font-style: italic; }
+    .qpl-term-links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .qpl-term-qep-link {
+      font-size: 0.78rem; color: #6c63ff; font-weight: 600;
+    }
+    .qpl-term-qep-link:hover { text-decoration: underline; }
+    .qpl-term-wiki-link { font-size: 0.78rem; color: #a0aec0; }
+    .qpl-term-wiki-link:hover { color: #4a5568; text-decoration: underline; }
+
+    /* Empty state */
+    .qpl-empty-state { text-align: center; padding: 60px 20px; }
+    .qpl-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .qpl-empty-title { font-size: 1.1rem; color: #4a5568; margin-bottom: 6px; }
+    .qpl-empty-sub { font-size: 0.9rem; color: #a0aec0; }
+
+    /* Attribution */
+    .qpl-attribution {
+      margin-top: 48px; font-size: 0.78rem; color: #a0aec0; text-align: center;
+    }
+    .qpl-attribution a { color: #718096; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="qpl-page">
+
+  <!-- Header -->
+  <div class="qpl-header">
+    <div class="qpl-header-inner">
+      <div class="qpl-brand">
+        <img src="/static/images/QPLlogo.svg" alt="QuantPlus Learning" class="qpl-logo"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="qpl-title">QuantPlus Learning</div>
+          <div class="qpl-subtitle">Financial Terms &amp; Glossary</div>
+        </div>
+      </div>
+      <a href="https://quantearningspro.com" class="qpl-cta-btn">
+        Try QuantEarningsPro Free →
+      </a>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="qpl-search-section">
+    <div class="qpl-search-wrap">
+      <div class="qpl-search-box" id="glossarySearchBox">
+        <span class="qpl-search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        <input
+          type="text"
+          id="glossarySearchInput"
+          class="qpl-search-input"
+          placeholder="Search any financial term — e.g. RSI, implied volatility, EPS…"
+          autocomplete="off"
+          value="{{ prefill_query }}"
+          aria-label="Search financial terms"
+        >
+        <button class="qpl-search-clear" id="glossarySearchClear"
+                aria-label="Clear search" style="display:none">✕</button>
+      </div>
+      <div class="qpl-search-results" id="glossarySearchResults"
+           role="listbox" aria-label="Search results" style="display:none"></div>
+    </div>
+    <p class="qpl-search-hint">
+      {{ total_count }} terms in our glossary — can't find yours? Just search and we'll look it up automatically.
+    </p>
+  </div>
+
+  <!-- Nav -->
+  <div class="qpl-nav-section">
+    <a href="/learn/glossary" class="qpl-nav-btn active">📚 Financial Glossary</a>
+    <a href="/learn" class="qpl-nav-btn">🎓 Investing Tutorials</a>
+    <a href="https://quantearningspro.com/screener" class="qpl-nav-btn qpl-nav-btn--product">
+      📊 Open QuantEarningsPro
+    </a>
+  </div>
+
+  <!-- Browse header -->
+  <div class="qpl-browse-header" id="browseHeader">
+    <span>Browse all {{ total_count }} terms</span>
+    <span class="qpl-browse-filter" id="activeCategoryFilter"></span>
+  </div>
+
+  <!-- Category pills -->
+  <div class="qpl-category-pills" id="categoryPills">
+    <button class="qpl-pill active" data-cat="all">All</button>
+    {% for cat in grouped_terms.keys() %}
+    <button class="qpl-pill" data-cat="{{ cat }}">{{ cat }}</button>
+    {% endfor %}
+  </div>
+
+  <!-- Term grid -->
+  <div class="qpl-terms-grid" id="termsGrid">
+    {% for cat, terms in grouped_terms.items() %}
+    <div class="qpl-category-group" data-category="{{ cat }}">
+      <h2 class="qpl-category-heading">{{ cat }}</h2>
+      <div class="qpl-term-cards">
+        {% for t in terms %}
+        <div class="qpl-term-card"
+             data-slug="{{ t.slug }}"
+             data-term="{{ t.term | lower }}"
+             data-cat="{{ t.category }}">
+          <div class="qpl-term-card-header">
+            <h3 class="qpl-term-name">
+              <a href="/learn/glossary/{{ t.slug }}">{{ t.term }}</a>
+            </h3>
+            <span class="qpl-term-cat-badge">{{ t.category }}</span>
+          </div>
+          <p class="qpl-term-definition">{{ t.definition }}</p>
+          <p class="qpl-term-explanation">{{ t.explanation }}</p>
+          <div class="qpl-term-links">
+            {% if t.qep_url %}
+            <a href="{{ t.qep_url }}" class="qpl-term-qep-link" target="_blank">
+              {{ t.qep_anchor or 'See in QuantEarningsPro' }} ↗
+            </a>
+            {% endif %}
+            {% if t.wiki_url %}
+            <a href="{{ t.wiki_url }}" class="qpl-term-wiki-link"
+               target="_blank" rel="noopener noreferrer">Wikipedia ↗</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Empty state -->
+    <div class="qpl-empty-state" id="emptyState" style="display:none">
+      <div class="qpl-empty-icon">🔍</div>
+      <p class="qpl-empty-title">Searching for <strong id="emptyTerm"></strong>…</p>
+      <p class="qpl-empty-sub">Looking it up for you automatically.</p>
+    </div>
+  </div>
+
+  <div class="qpl-attribution">
+    Definitions sourced from <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>
+    (CC BY-SA 4.0). Explanations are original QuantPlus Learning content.
+  </div>
+
+</div>
+
+<script src="/static/js/glossary-search.js"></script>
+{% if prefill_query %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.GlossarySearch) {
+      window.GlossarySearch.search({{ prefill_query | tojson }});
+    }
+  });
+</script>
+{% endif %}
+
+<script>
+// Category pill filter (client-side, no reload needed)
+(function() {
+  const pills = document.querySelectorAll('.qpl-pill');
+  const groups = document.querySelectorAll('.qpl-category-group');
+  const filterLabel = document.getElementById('activeCategoryFilter');
+
+  pills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      pills.forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      const cat = pill.dataset.cat;
+      filterLabel.textContent = cat === 'all' ? '' : '— ' + cat;
+      groups.forEach(function(g) {
+        g.style.display = (cat === 'all' || g.dataset.category === cat) ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
