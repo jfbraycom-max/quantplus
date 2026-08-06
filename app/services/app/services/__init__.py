@@ -1,0 +1,1 @@
+# QuantEarningsPro — glossary services package
