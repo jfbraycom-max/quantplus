@@ -2,6 +2,10 @@
 
 
 
+
+
+
+
 from sqlalchemy.orm import Session
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status, Request
@@ -13,7 +17,15 @@ from fastapi.templating import Jinja2Templates
 
 
 
+
+
+
+
 import secrets
+
+
+
+
 
 
 
@@ -22,6 +34,11 @@ from app.database import get_db
 import app.models as models
 import app.schemas as schemas
 from app.routers import learn
+from app.routers import learn
+
+
+
+
 
 
 
@@ -34,15 +51,4 @@ app = FastAPI(
 import os
 
 
-
-
-# --- Mount Static Files & Templates ---
-app.include_router(learn.router)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="templates")
-
-
-
-
-security = HTTPBasic()
 
