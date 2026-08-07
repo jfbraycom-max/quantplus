@@ -1,30 +1,86 @@
+import logging
+import traceback
 from sqlalchemy.orm import Session
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import secrets
+import os
 
 from app.database import get_db
 import app.models as models
 import app.schemas as schemas
 from app.routers import learn
 
+# --- Logging Setup ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+log = logging.getLogger(__name__)
+
+# --- App Init ---
 app = FastAPI(
     title="QuantPlus Scoring Engine API",
     description="Backend API for QuantPlus stock screening, scoring, market regimes, and watchlists.",
     version="1.0.0"
 )
-import os
 
 # --- Mount Static Files & Templates ---
 app.include_router(learn.router)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# --- Global Exception Handlers ---
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    log.warning("HTTP %s on %s %s: %s", exc.status_code, request.method, request.url, exc.detail)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.detail, "path": str(request.url.path)},
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    log.warning("Validation error on %s %s: %s", request.method, request.url, exc.errors())
+    return JSONResponse(
+        status_code=422,
+        content={"error": "Invalid request parameters", "detail": exc.errors()},
+    )
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    log.error(
+        "Unhandled exception on %s %s | %s",
+        request.method, request.url, traceback.format_exc()
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error. Our team has been notified."},
+    )
+
+# --- Startup / Shutdown Events ---
+@app.on_event("startup")
+async def on_startup():
+    log.info("QuantPlus API starting up")
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    log.info("QuantPlus API shutting down")
+
+# --- Health Check ---
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "QuantPlus API"}
+
+# --- Auth ---
 security = HTTPBasic()
 
 def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
@@ -41,7 +97,8 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(security)):
 # --- PUBLIC SEO LANDING PAGE ---
 @app.get("/", response_class=HTMLResponse)
 def public_landing():
-    return """
+    try:
+        return """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -198,15 +255,20 @@ h1 { color: #111; font-size: 2.5rem; margin-bottom: 10px; }
       fetch('/api/glossary/search?q=' + encodeURIComponent(q) + '&limit=6')
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (!data.length) { dropdown.style.display = 'none'; return; }
-          var html = data.map(function(t) {
+          var terms = data.terms || [];
+          if (!terms.length) {
+            dropdown.innerHTML = '<div style="padding:12px 14px;color:#718096;font-size:0.85rem;">No results for "' + q + '"</div>';
+            dropdown.style.display = 'block';
+            return;
+          }
+          var html = terms.map(function(t) {
             return '<a class="qpl-result-item" href="/learn/glossary/' + t.slug + '">'
               + '<div class="qpl-result-term">' + t.term + '</div>'
               + '<div class="qpl-result-cat">' + t.category + '</div>'
-              + '<div class="qpl-result-def">' + t.definition.slice(0, 100) + '…</div>'
+              + '<div class="qpl-result-def">' + t.definition.slice(0, 100) + '&hellip;</div>'
               + '</a>';
           }).join('');
-          html += '<a class="qpl-search-footer" href="/learn/glossary?q=' + encodeURIComponent(q) + '">Browse all 72 terms in the glossary →</a>';
+          html += '<a class="qpl-search-footer" href="/learn/glossary?q=' + encodeURIComponent(q) + '">Browse all 72 terms in the glossary &rarr;</a>';
           dropdown.innerHTML = html;
           dropdown.style.display = 'block';
         })
@@ -229,11 +291,15 @@ h1 { color: #111; font-size: 2.5rem; margin-bottom: 10px; }
 </body>
 </html>
 """
+    except Exception as e:
+        log.error("Homepage render error: %s | %s", e, traceback.format_exc())
+        raise
 
 # --- PRIVATE SECURE DASHBOARD ---
 @app.get("/dashboard", response_class=HTMLResponse)
 def private_dashboard(username: str = Depends(verify_admin)):
-    return f"""
+    try:
+        return f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -246,7 +312,7 @@ body {{ font-family: sans-serif; padding: 40px; background: #121212; color: #e0e
 </head>
 <body>
 <h1>Internal Analytics Dashboard</h1>
-<p>Welcome back, {{username}}. System operational.</p>
+<p>Welcome back, {username}. System operational.</p>
 <div class="stats">
 <h3>Database Status</h3>
 <p>12,678 daily historical records loaded and indexed.</p>
@@ -254,6 +320,9 @@ body {{ font-family: sans-serif; padding: 40px; background: #121212; color: #e0e
 </body>
 </html>
 """
+    except Exception as e:
+        log.error("Dashboard render error for user %r: %s", username, e)
+        raise
 
 # --- API Status Route ---
 @app.get("/api/status")
@@ -263,55 +332,76 @@ def read_root():
 # --- Ticker & Stock Endpoints ---
 @app.get("/api/stocks", response_model=List[schemas.StockResponse])
 def get_stocks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Fetch all screened stocks from the database."""
-    return db.query(models.Stock).offset(skip).limit(limit).all()
+    try:
+        return db.query(models.Stock).offset(skip).limit(limit).all()
+    except Exception as e:
+        log.error("GET /api/stocks failed: %s | %s", e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to fetch stocks")
 
 @app.post("/api/stocks", response_model=schemas.StockResponse, status_code=status.HTTP_201_CREATED)
 def create_or_update_stock(stock: schemas.StockCreate, db: Session = Depends(get_db)):
-    """Add or update a stock record."""
-    db_stock = db.query(models.Stock).filter(models.Stock.ticker == stock.ticker).first()
-    if db_stock:
-        for key, value in stock.model_dump().items():
-            setattr(db_stock, key, value)
-    else:
-        db_stock = models.Stock(**stock.model_dump())
-        db.add(db_stock)
-    db.commit()
-    db.refresh(db_stock)
-    return db_stock
+    try:
+        db_stock = db.query(models.Stock).filter(models.Stock.ticker == stock.ticker).first()
+        if db_stock:
+            for key, value in stock.model_dump().items():
+                setattr(db_stock, key, value)
+        else:
+            db_stock = models.Stock(**stock.model_dump())
+            db.add(db_stock)
+        db.commit()
+        db.refresh(db_stock)
+        return db_stock
+    except Exception as e:
+        db.rollback()
+        log.error("POST /api/stocks failed for ticker %r: %s | %s", stock.ticker, e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to create or update stock")
 
 # --- Scoring Endpoints ---
 @app.get("/api/scores", response_model=List[schemas.ScoreResponse])
 def get_scores(ticker: str = None, limit: int = 100, db: Session = Depends(get_db)):
-    """Fetch calculated scores for all tickers or a specific ticker."""
-    query = db.query(models.Score)
-    if ticker:
-        query = query.filter(models.Score.ticker == ticker)
-    return query.order_by(models.Score.created_at.desc()).limit(limit).all()
+    try:
+        query = db.query(models.Score)
+        if ticker:
+            query = query.filter(models.Score.ticker == ticker)
+        return query.order_by(models.Score.created_at.desc()).limit(limit).all()
+    except Exception as e:
+        log.error("GET /api/scores failed (ticker=%r): %s | %s", ticker, e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to fetch scores")
 
 @app.post("/api/scores", response_model=schemas.ScoreResponse, status_code=status.HTTP_201_CREATED)
 def create_score(score: schemas.ScoreCreate, db: Session = Depends(get_db)):
-    """Record a calculated stock score."""
-    db_score = models.Score(**score.model_dump())
-    db.add(db_score)
-    db.commit()
-    db.refresh(db_score)
-    return db_score
+    try:
+        db_score = models.Score(**score.model_dump())
+        db.add(db_score)
+        db.commit()
+        db.refresh(db_score)
+        return db_score
+    except Exception as e:
+        db.rollback()
+        log.error("POST /api/scores failed: %s | %s", e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to record score")
 
 # --- Watchlist Endpoints ---
 @app.get("/api/watchlists", response_model=List[schemas.WatchlistResponse])
 def get_watchlist(list_type: str = None, db: Session = Depends(get_db)):
-    """Fetch watchlist items."""
-    query = db.query(models.Watchlist)
-    if list_type:
-        query = query.filter(models.Watchlist.list_type == list_type)
-    return query.all()
+    try:
+        query = db.query(models.Watchlist)
+        if list_type:
+            query = query.filter(models.Watchlist.list_type == list_type)
+        return query.all()
+    except Exception as e:
+        log.error("GET /api/watchlists failed (list_type=%r): %s | %s", list_type, e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to fetch watchlists")
 
 @app.post("/api/watchlists", response_model=schemas.WatchlistResponse, status_code=status.HTTP_201_CREATED)
 def add_to_watchlist(item: schemas.WatchlistCreate, db: Session = Depends(get_db)):
-    """Add a ticker to a watchlist."""
-    db_item = models.Watchlist(**item.model_dump())
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+    try:
+        db_item = models.Watchlist(**item.model_dump())
+        db.add(db_item)
+        db.commit()
+        db.refresh(db_item)
+        return db_item
+    except Exception as e:
+        db.rollback()
+        log.error("POST /api/watchlists failed: %s | %s", e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Failed to add to watchlist")
